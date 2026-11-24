@@ -330,6 +330,15 @@ class ApiClient {
     return res.json();
   }
 
+  // Storage & Disk Sync
+  async getStorageStatus(): Promise<any> {
+    return this.request<any>('/storage/status');
+  }
+
+  async syncStorage(): Promise<any> {
+    return this.request<any>('/storage/sync', { method: 'POST' });
+  }
+
   // Export
   async exportPage(pageId: string, format: 'markdown' | 'html' | 'json' | 'titan' = 'markdown'): Promise<any> {
     return this.request<any>(`/export/page/${pageId}?format=${format}`);

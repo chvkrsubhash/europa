@@ -53,5 +53,27 @@
     "is_deleted": false,
     "created_at": "2026-11-24T15:27:54.464866Z",
     "updated_at": "2026-11-24T15:27:54.464866Z"
+  },
+  {
+    "id": "6f5d33f9-a66a-4170-8c04-327a708fce67",
+    "owner_id": "usr_1795513805623",
+    "title": "Quantum Knowledge Vault",
+    "color": "#6941A5",
+    "description": "High yield technical notes",
+    "is_archived": false,
+    "is_deleted": false,
+    "created_at": "2026-11-24T15:52:21.776895Z",
+    "updated_at": "2026-11-24T15:52:21.776895Z"
+  },
+  {
+    "id": "dd9a5910-bea8-4f16-81cf-c01de7320767",
+    "owner_id": "usr_1795513805623",
+    "title": "Quantum Knowledge Vault",
+    "color": "#6941A5",
+    "description": "High yield technical notes",
+    "is_archived": false,
+    "is_deleted": false,
+    "created_at": "2026-11-24T16:20:21.463365Z",
+    "updated_at": "2026-11-24T16:20:21.463365Z"
   }
 ]

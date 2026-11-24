@@ -44,5 +44,51 @@
     ],
     "provider": "europa-local",
     "created_at": "2026-11-24T15:20:46.437772Z"
+  },
+  {
+    "id": "msg_u_1795515741816",
+    "conversation_id": "conv_1795515741816",
+    "role": "user",
+    "content": "Summarize the note content",
+    "created_at": "2026-11-24T15:52:21.816814Z"
+  },
+  {
+    "id": "msg_a_1795515741816",
+    "conversation_id": "conv_1795515741816",
+    "role": "assistant",
+    "content": "### Executive Summary (Grounded from Notebook)\n\n- Testing free-form container placement [Citation 1]\n\n*Synthesized from 1 notebook section(s) across 1 page citation(s).*",
+    "citations": [
+      {
+        "id": 1,
+        "page_id": "page_1795515741778",
+        "page_title": "Untitled Page",
+        "snippet": "Testing free-form container placement..."
+      }
+    ],
+    "provider": "europa-local",
+    "created_at": "2026-11-24T15:52:21.816814Z"
+  },
+  {
+    "id": "msg_u_1795517421538",
+    "conversation_id": "conv_1795517421536",
+    "role": "user",
+    "content": "Summarize the note content",
+    "created_at": "2026-11-24T16:20:21.538250Z"
+  },
+  {
+    "id": "msg_a_1795517421540",
+    "conversation_id": "conv_1795517421536",
+    "role": "assistant",
+    "content": "### Executive Summary (Grounded from Notebook)\n\n- Testing free-form container placement [Citation 1]\n\n*Synthesized from 1 notebook section(s) across 1 page citation(s).*",
+    "citations": [
+      {
+        "id": 1,
+        "page_id": "page_1795517421473",
+        "page_title": "Untitled Page",
+        "snippet": "Testing free-form container placement..."
+      }
+    ],
+    "provider": "europa-local",
+    "created_at": "2026-11-24T16:20:21.540258Z"
   }
 ]

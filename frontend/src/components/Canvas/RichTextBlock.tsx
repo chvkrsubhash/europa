@@ -22,7 +22,7 @@ export const RichTextBlock: React.FC<RichTextBlockProps> = ({
   initialContent,
   isLocked
 }) => {
-  const { updateBlock, deleteBlock } = useNotebook();
+  const { updateBlock, deleteBlock, setActiveEditor } = useNotebook();
 
   const editor = useEditor({
     extensions: [
@@ -54,11 +54,20 @@ export const RichTextBlock: React.FC<RichTextBlockProps> = ({
         return false;
       }
     },
+    onFocus: ({ editor }) => {
+      setActiveEditor(editor);
+    },
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       updateBlock(id, { content: html });
     },
   });
+
+  useEffect(() => {
+    if (editor) {
+      setActiveEditor(editor);
+    }
+  }, [editor, setActiveEditor]);
 
   // Sync external content changes (e.g. clear content or AI inserts)
   useEffect(() => {

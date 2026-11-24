@@ -65,6 +65,14 @@ interface NotebookContextType {
   setIsLeftNavOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
   activeSidebarPanel: 'ai' | 'tags' | 'tasks' | 'info' | 'search' | null;
   setActiveSidebarPanel: (panel: 'ai' | 'tags' | 'tasks' | 'info' | 'search' | null) => void;
+  isBackstageOpen: boolean;
+  setIsBackstageOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  backstageActiveTab: string;
+  setBackstageActiveTab: React.Dispatch<React.SetStateAction<string>>;
+  
+  // Active Rich Text Editor instance for Ribbon formatting
+  activeEditor: any | null;
+  setActiveEditor: (editor: any | null) => void;
   
   // Sync & Undo/Redo
   syncStatus: SyncStatus;
@@ -107,6 +115,9 @@ export const NotebookProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [activeRibbonTab, setActiveRibbonTab] = useState<string>('home');
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [activeSidebarPanel, setActiveSidebarPanel] = useState<'ai' | 'tags' | 'tasks' | 'info' | 'search' | null>(null);
+  const [isBackstageOpen, setIsBackstageOpen] = useState<boolean>(false);
+  const [backstageActiveTab, setBackstageActiveTab] = useState<string>('home');
+  const [activeEditor, setActiveEditor] = useState<any | null>(null);
   
   // Sync status
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('saved');
@@ -460,6 +471,12 @@ export const NotebookProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setIsLeftNavOpen,
         activeSidebarPanel,
         setActiveSidebarPanel,
+        isBackstageOpen,
+        setIsBackstageOpen,
+        backstageActiveTab,
+        setBackstageActiveTab,
+        activeEditor,
+        setActiveEditor,
         syncStatus,
         undo,
         redo,

@@ -13,6 +13,7 @@ import { ShareModal } from './components/Modals/ShareModal';
 import { SettingsModal } from './components/Modals/SettingsModal';
 import { ShortcutsModal } from './components/Modals/ShortcutsModal';
 import { SearchModal } from './components/Modals/SearchModal';
+import { BackstageView } from './components/Backstage/BackstageView';
 import { api } from './services/api';
 
 const MainLayout: React.FC = () => {
@@ -359,6 +360,11 @@ const MainLayout: React.FC = () => {
           </form>
         </div>
       )}
+      {/* Backstage View (Office / OneNote Style File Menu) */}
+      <BackstageView
+        onOpenExport={handleExport}
+        onOpenTemplates={() => setIsTemplatesOpen(true)}
+      />
     </div>
   );
 };

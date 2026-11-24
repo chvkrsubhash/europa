@@ -36,5 +36,43 @@
     "thickness": 3.0,
     "opacity": 1.0,
     "created_at": "2026-11-24T15:20:46.419720Z"
+  },
+  {
+    "id": "14457e25-17da-4b75-aa8e-a8978fcde1f8",
+    "page_id": "page_1795515741778",
+    "tool": "pen",
+    "points": [
+      {
+        "x": 10,
+        "y": 20
+      },
+      {
+        "x": 30,
+        "y": 50
+      }
+    ],
+    "color": "#6941A5",
+    "thickness": 3.0,
+    "opacity": 1.0,
+    "created_at": "2026-11-24T15:52:21.792303Z"
+  },
+  {
+    "id": "2bd972f9-82d0-41a6-a678-27a533646fc2",
+    "page_id": "page_1795517421473",
+    "tool": "pen",
+    "points": [
+      {
+        "x": 10,
+        "y": 20
+      },
+      {
+        "x": 30,
+        "y": 50
+      }
+    ],
+    "color": "#6941A5",
+    "thickness": 3.0,
+    "opacity": 1.0,
+    "created_at": "2026-11-24T16:20:21.504064Z"
   }
 ]

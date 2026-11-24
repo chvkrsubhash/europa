@@ -237,5 +237,163 @@
     "is_locked": false,
     "created_at": "2026-11-24T15:50:56.681180Z",
     "updated_at": "2026-11-24T15:50:56.681180Z"
+  },
+  {
+    "id": "1a092ad9-93ff-4dca-b95e-9073abd0d7a9",
+    "page_id": "page_1795515741778",
+    "block_type": "text",
+    "x": 180.0,
+    "y": 140.0,
+    "width": 450.0,
+    "height": null,
+    "layer_order": 0,
+    "content": "<p>Testing free-form container placement</p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-24T15:52:21.787333Z",
+    "updated_at": "2026-11-24T15:52:21.789244Z"
+  },
+  {
+    "id": "blk_1795515741803_0",
+    "page_id": "page_1795515741801",
+    "block_type": "text",
+    "x": 50,
+    "y": 40,
+    "width": 800,
+    "height": null,
+    "layer_order": 0,
+    "content": "<h2>Topic / Lecture Title</h2><p><strong>Date:</strong> November 24, 2026 &nbsp;|&nbsp; <strong>Course:</strong> Subject Name</p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-24T15:52:21.803878Z",
+    "updated_at": "2026-11-24T15:52:21.803878Z"
+  },
+  {
+    "id": "blk_1795515741803_1",
+    "page_id": "page_1795515741801",
+    "block_type": "text",
+    "x": 50,
+    "y": 120,
+    "width": 240,
+    "height": null,
+    "layer_order": 1,
+    "content": "<h3>Cues & Keywords</h3><ul><li>Key Concept 1</li><li>Formula / Rule</li><li>Important Question?</li></ul>",
+    "formatting": {
+      "backgroundColor": "#F7F3FB"
+    },
+    "is_locked": false,
+    "created_at": "2026-11-24T15:52:21.803878Z",
+    "updated_at": "2026-11-24T15:52:21.803878Z"
+  },
+  {
+    "id": "blk_1795515741806_2",
+    "page_id": "page_1795515741801",
+    "block_type": "text",
+    "x": 310,
+    "y": 120,
+    "width": 540,
+    "height": null,
+    "layer_order": 2,
+    "content": "<h3>Detailed Lecture Notes</h3><p>Record notes using short sentences, bullet points, and diagrams.</p><p>Leave blank space between points to elaborate later.</p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-24T15:52:21.806506Z",
+    "updated_at": "2026-11-24T15:52:21.806506Z"
+  },
+  {
+    "id": "blk_1795515741808_3",
+    "page_id": "page_1795515741801",
+    "block_type": "text",
+    "x": 50,
+    "y": 400,
+    "width": 800,
+    "height": null,
+    "layer_order": 3,
+    "content": "<h3>Summary</h3><p>Briefly synthesize the main takeaway in 2-3 sentences immediately after class.</p>",
+    "formatting": {
+      "backgroundColor": "#F0EAF8"
+    },
+    "is_locked": false,
+    "created_at": "2026-11-24T15:52:21.808928Z",
+    "updated_at": "2026-11-24T15:52:21.808928Z"
+  },
+  {
+    "id": "31835073-f486-462d-8827-4497a48c90ef",
+    "page_id": "page_1795517421473",
+    "block_type": "text",
+    "x": 180.0,
+    "y": 140.0,
+    "width": 450.0,
+    "height": null,
+    "layer_order": 0,
+    "content": "<p>Testing free-form container placement</p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-24T16:20:21.483479Z",
+    "updated_at": "2026-11-24T16:20:21.495952Z"
+  },
+  {
+    "id": "blk_1795517421516_0",
+    "page_id": "page_1795517421514",
+    "block_type": "text",
+    "x": 50,
+    "y": 40,
+    "width": 800,
+    "height": null,
+    "layer_order": 0,
+    "content": "<h2>Topic / Lecture Title</h2><p><strong>Date:</strong> November 24, 2026 &nbsp;|&nbsp; <strong>Course:</strong> Subject Name</p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-24T16:20:21.516115Z",
+    "updated_at": "2026-11-24T16:20:21.516115Z"
+  },
+  {
+    "id": "blk_1795517421520_1",
+    "page_id": "page_1795517421514",
+    "block_type": "text",
+    "x": 50,
+    "y": 120,
+    "width": 240,
+    "height": null,
+    "layer_order": 1,
+    "content": "<h3>Cues & Keywords</h3><ul><li>Key Concept 1</li><li>Formula / Rule</li><li>Important Question?</li></ul>",
+    "formatting": {
+      "backgroundColor": "#F7F3FB"
+    },
+    "is_locked": false,
+    "created_at": "2026-11-24T16:20:21.520134Z",
+    "updated_at": "2026-11-24T16:20:21.520134Z"
+  },
+  {
+    "id": "blk_1795517421524_2",
+    "page_id": "page_1795517421514",
+    "block_type": "text",
+    "x": 310,
+    "y": 120,
+    "width": 540,
+    "height": null,
+    "layer_order": 2,
+    "content": "<h3>Detailed Lecture Notes</h3><p>Record notes using short sentences, bullet points, and diagrams.</p><p>Leave blank space between points to elaborate later.</p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-24T16:20:21.524159Z",
+    "updated_at": "2026-11-24T16:20:21.524159Z"
+  },
+  {
+    "id": "blk_1795517421526_3",
+    "page_id": "page_1795517421514",
+    "block_type": "text",
+    "x": 50,
+    "y": 400,
+    "width": 800,
+    "height": null,
+    "layer_order": 3,
+    "content": "<h3>Summary</h3><p>Briefly synthesize the main takeaway in 2-3 sentences immediately after class.</p>",
+    "formatting": {
+      "backgroundColor": "#F0EAF8"
+    },
+    "is_locked": false,
+    "created_at": "2026-11-24T16:20:21.526193Z",
+    "updated_at": "2026-11-24T16:20:21.526193Z"
   }
 ]

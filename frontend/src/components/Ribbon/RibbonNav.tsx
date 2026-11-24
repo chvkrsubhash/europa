@@ -33,7 +33,9 @@ export const RibbonNav: React.FC<RibbonNavProps> = ({ onOpenTemplates, onOpenExp
     zoom,
     setZoom,
     setActiveSidebarPanel,
-    activeSidebarPanel
+    activeSidebarPanel,
+    setIsBackstageOpen,
+    activeEditor
   } = useNotebook();
 
   const tabs = [
@@ -43,7 +45,6 @@ export const RibbonNav: React.FC<RibbonNavProps> = ({ onOpenTemplates, onOpenExp
     { id: 'view', label: 'View' },
     { id: 'review', label: 'Review' },
     { id: 'ai', label: 'AI' },
-    { id: 'file', label: 'File' },
     { id: 'help', label: 'Help' },
   ];
 
@@ -51,6 +52,15 @@ export const RibbonNav: React.FC<RibbonNavProps> = ({ onOpenTemplates, onOpenExp
     <div className="bg-[#FAF8FD] border-b border-[#E0E0E0] select-none text-[#242424]">
       {/* Tab Headers */}
       <div className="flex items-center px-2 space-x-1 border-b border-[#E5E0EE] bg-[#F5F5F5]">
+        {/* Authentic OneNote / Office Purple File Tab */}
+        <button
+          onClick={() => setIsBackstageOpen(true)}
+          className="px-3.5 py-1.5 text-xs font-semibold bg-[#6941A5] text-white hover:bg-[#58338C] transition-colors rounded-t-sm flex items-center space-x-1 mr-1 shadow-sm"
+          title="Open Backstage View (File Menu)"
+        >
+          <span>File</span>
+        </button>
+
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -99,75 +109,256 @@ export const RibbonNav: React.FC<RibbonNavProps> = ({ onOpenTemplates, onOpenExp
               </button>
             </div>
 
-            {/* Basic Formatting Buttons */}
+            {/* Typography Styles Dropdown */}
             <div className="flex items-center space-x-1 px-2">
+              <select
+                aria-label="Text Formatting Style"
+                className="h-7 text-xs bg-white border border-[#D1D5DB] rounded px-2 text-[#242424] focus:outline-none focus:border-[#6941A5]"
+                value={
+                  activeEditor?.isActive('heading', { level: 1 }) ? 'h1' :
+                  activeEditor?.isActive('heading', { level: 2 }) ? 'h2' :
+                  activeEditor?.isActive('heading', { level: 3 }) ? 'h3' :
+                  activeEditor?.isActive('blockquote') ? 'quote' :
+                  activeEditor?.isActive('codeBlock') ? 'code' : 'p'
+                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (!activeEditor) return;
+                  if (val === 'p') activeEditor.chain().focus().setParagraph().run();
+                  else if (val === 'h1') activeEditor.chain().focus().toggleHeading({ level: 1 }).run();
+                  else if (val === 'h2') activeEditor.chain().focus().toggleHeading({ level: 2 }).run();
+                  else if (val === 'h3') activeEditor.chain().focus().toggleHeading({ level: 3 }).run();
+                  else if (val === 'quote') activeEditor.chain().focus().toggleBlockquote().run();
+                  else if (val === 'code') activeEditor.chain().focus().toggleCodeBlock().run();
+                }}
+              >
+                <option value="p">Normal text</option>
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+                <option value="quote">Quote</option>
+                <option value="code">Code Block</option>
+              </select>
+            </div>
+
+            {/* Text Formatting: Bold, Italic, Underline, Strike, Code */}
+            <div className="flex items-center space-x-0.5 px-2">
               <button
                 title="Bold (Ctrl+B)"
-                onClick={() => document.execCommand('bold')}
-                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#242424]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().toggleBold().run();
+                  } else {
+                    document.execCommand('bold');
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive('bold')
+                    ? 'bg-[#DFD1F0] text-[#6941A5] font-bold ring-1 ring-[#6941A5]/40'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
               >
-                <Bold className="w-3.5 h-3.5 font-bold" />
+                <Bold className="w-3.5 h-3.5" />
               </button>
+
               <button
                 title="Italic (Ctrl+I)"
-                onClick={() => document.execCommand('italic')}
-                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#242424]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().toggleItalic().run();
+                  } else {
+                    document.execCommand('italic');
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive('italic')
+                    ? 'bg-[#DFD1F0] text-[#6941A5] ring-1 ring-[#6941A5]/40'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
               >
                 <Italic className="w-3.5 h-3.5" />
               </button>
+
               <button
                 title="Underline (Ctrl+U)"
-                onClick={() => document.execCommand('underline')}
-                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#242424]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().toggleUnderline().run();
+                  } else {
+                    document.execCommand('underline');
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive('underline')
+                    ? 'bg-[#DFD1F0] text-[#6941A5] ring-1 ring-[#6941A5]/40'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
               >
                 <Underline className="w-3.5 h-3.5" />
               </button>
+
               <button
                 title="Strikethrough"
-                onClick={() => document.execCommand('strikeThrough')}
-                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#242424]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().toggleStrike().run();
+                  } else {
+                    document.execCommand('strikeThrough');
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive('strike')
+                    ? 'bg-[#DFD1F0] text-[#6941A5] ring-1 ring-[#6941A5]/40'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
               >
                 <Strikethrough className="w-3.5 h-3.5" />
               </button>
+
+              <button
+                title="Highlight Text"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().toggleHighlight({ color: '#fef08a' }).run();
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive('highlight')
+                    ? 'bg-yellow-200 text-yellow-900 ring-1 ring-yellow-400'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
+              >
+                <Highlighter className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                title="Purple Accent Text Color"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().setColor('#6941A5').run();
+                  }
+                }}
+                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#6941A5]"
+              >
+                <Palette className="w-3.5 h-3.5" />
+              </button>
             </div>
 
-            {/* Alignment */}
-            <div className="flex items-center space-x-1 px-2">
+            {/* Alignment Controls */}
+            <div className="flex items-center space-x-0.5 px-2">
               <button
                 title="Align Left"
-                onClick={() => document.execCommand('justifyLeft')}
-                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#242424]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().setTextAlign('left').run();
+                  } else {
+                    document.execCommand('justifyLeft');
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive({ textAlign: 'left' })
+                    ? 'bg-[#DFD1F0] text-[#6941A5]'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
               >
                 <AlignLeft className="w-3.5 h-3.5" />
               </button>
+
               <button
                 title="Align Center"
-                onClick={() => document.execCommand('justifyCenter')}
-                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#242424]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().setTextAlign('center').run();
+                  } else {
+                    document.execCommand('justifyCenter');
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive({ textAlign: 'center' })
+                    ? 'bg-[#DFD1F0] text-[#6941A5]'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
               >
                 <AlignCenter className="w-3.5 h-3.5" />
               </button>
+
               <button
                 title="Align Right"
-                onClick={() => document.execCommand('justifyRight')}
-                className="p-1.5 rounded hover:bg-[#EBEBEB] text-[#242424]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().setTextAlign('right').run();
+                  } else {
+                    document.execCommand('justifyRight');
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive({ textAlign: 'right' })
+                    ? 'bg-[#DFD1F0] text-[#6941A5]'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
               >
                 <AlignRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* Tags & Task Summaries */}
+            {/* Lists */}
+            <div className="flex items-center space-x-0.5 px-2">
+              <button
+                title="Bulleted List"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().toggleBulletList().run();
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive('bulletList')
+                    ? 'bg-[#DFD1F0] text-[#6941A5]'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                title="Numbered List"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (activeEditor) {
+                    activeEditor.chain().focus().toggleOrderedList().run();
+                  }
+                }}
+                className={`p-1.5 rounded transition-colors ${
+                  activeEditor?.isActive('orderedList')
+                    ? 'bg-[#DFD1F0] text-[#6941A5]'
+                    : 'hover:bg-[#EBEBEB] text-[#242424]'
+                }`}
+              >
+                <ListOrdered className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Tags & Task Vaults */}
             <div className="flex items-center space-x-2 px-2">
               <button
                 onClick={() => setActiveSidebarPanel(activeSidebarPanel === 'tags' ? null : 'tags')}
-                className="flex items-center space-x-1.5 px-2 py-1 rounded bg-[#F0EAF8] text-[#6941A5] font-medium hover:bg-[#DFD1F0]"
+                className="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-[#F0EAF8] text-[#6941A5] font-medium hover:bg-[#DFD1F0] transition-colors"
               >
                 <Tag className="w-3.5 h-3.5" />
                 <span>Tags Summary</span>
               </button>
               <button
                 onClick={() => setActiveSidebarPanel(activeSidebarPanel === 'tasks' ? null : 'tasks')}
-                className="flex items-center space-x-1.5 px-2 py-1 rounded bg-[#F0EAF8] text-[#6941A5] font-medium hover:bg-[#DFD1F0]"
+                className="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-[#F0EAF8] text-[#6941A5] font-medium hover:bg-[#DFD1F0] transition-colors"
               >
                 <CheckSquare className="w-3.5 h-3.5" />
                 <span>Tasks Vault</span>
