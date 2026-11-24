@@ -1,0 +1,57 @@
+[
+  {
+    "id": "nb-welcome-01",
+    "owner_id": "test-user",
+    "title": "My Notebook",
+    "color": "#6941A5",
+    "description": "Your main knowledge workspace in Europa",
+    "is_archived": false,
+    "is_deleted": false,
+    "created_at": "2026-11-24T15:10:26.621078Z",
+    "updated_at": "2026-11-24T15:10:26.621078Z"
+  },
+  {
+    "id": "nb-welcome-01",
+    "owner_id": "usr_1795513805623",
+    "title": "My Notebook",
+    "color": "#6941A5",
+    "description": "Your main knowledge workspace in Europa",
+    "is_archived": false,
+    "is_deleted": false,
+    "created_at": "2026-11-24T15:20:05.891293Z",
+    "updated_at": "2026-11-24T15:20:05.891293Z"
+  },
+  {
+    "id": "3dc5da53-4d03-41b3-85d6-cf89e27e14c4",
+    "owner_id": "usr_1795513805623",
+    "title": "Quantum Knowledge Vault",
+    "color": "#6941A5",
+    "description": "High yield technical notes",
+    "is_archived": false,
+    "is_deleted": false,
+    "created_at": "2026-11-24T15:20:05.909400Z",
+    "updated_at": "2026-11-24T15:20:05.909400Z"
+  },
+  {
+    "id": "a1c4ec5d-72fc-4c0a-ad2c-3a906d66e03d",
+    "owner_id": "usr_1795513805623",
+    "title": "Quantum Knowledge Vault",
+    "color": "#6941A5",
+    "description": "High yield technical notes",
+    "is_archived": false,
+    "is_deleted": false,
+    "created_at": "2026-11-24T15:20:46.403005Z",
+    "updated_at": "2026-11-24T15:20:46.403005Z"
+  },
+  {
+    "id": "nb-welcome-01",
+    "owner_id": "user-akashavyom-dev-01",
+    "title": "My Notebook",
+    "color": "#6941A5",
+    "description": "Your main knowledge workspace in Europa",
+    "is_archived": false,
+    "is_deleted": false,
+    "created_at": "2026-11-24T15:27:54.464866Z",
+    "updated_at": "2026-11-24T15:27:54.464866Z"
+  }
+]

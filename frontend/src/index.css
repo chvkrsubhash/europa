@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F5F5F5;
+  color: #242424;
+}
+
+::selection {
+  background-color: #DFD1F0;
+  color: #242424;
+}
+
+/* Custom scrollbars inspired by Windows Fluent / OneNote */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F1F1;
+}
+::-webkit-scrollbar-thumb {
+  background: #C4C4C4;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8E8E93;
+}
+
+/* Authentic Canvas Paper Sheet */
+.canvas-paper-sheet {
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  border: 1px solid #E5E5E8;
+  margin: 16px;
+  border-radius: 2px;
+}
+
+/* Tiptap & ProseMirror Styles */
+.ProseMirror {
+  outline: none !important;
+  min-height: 44px;
+  cursor: text;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+.ProseMirror p {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.6;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9CA3AF;
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #242424;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.ProseMirror h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #323130;
+  margin-top: 0.65rem;
+  margin-bottom: 0.35rem;
+}
+
+.ProseMirror h3 {
+  font-size: 1.12rem;
+  font-weight: 600;
+  color: #6941A5;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.35rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.35rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.ProseMirror li {
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 3.5px solid #6941A5;
+  padding-left: 0.85rem;
+  color: #4B5563;
+  font-style: italic;
+  margin: 0.6rem 0;
+  background-color: #FAF8FD;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  border-radius: 0 4px 4px 0;
+}
+
+.ProseMirror strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.ProseMirror code {
+  font-family: Consolas, 'Courier New', monospace;
+  background-color: #F3F4F6;
+  color: #6941A5;
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.875em;
+}
+
+/* Micro animations */
+button {
+  transition: all 0.12s ease-in-out;
+}

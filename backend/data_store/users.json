@@ -1,0 +1,26 @@
+[
+  {
+    "id": "usr_1795513805623",
+    "email": "scholar@akashavyom.com",
+    "password_hash": "$2b$12$5Yp22BfxeAUXpf6YXW23IOjT6nagCRBBCDTx6xkPMg0QOcY1ad1ua",
+    "full_name": "AkashaVyom Researcher",
+    "avatar_url": "",
+    "created_at": "2026-11-24T15:20:05.876777Z"
+  },
+  {
+    "id": "usr_titan_1795513846",
+    "email": "titan.lead@akashavyom.com",
+    "password_hash": "$2b$12$emgEYFBWPJhVMheN1cH7uuvd7y65iSTomQB2g45fQ/lOLKwbCWyeS",
+    "full_name": "Titan Lead Architect",
+    "avatar_url": "",
+    "created_at": "2026-11-24T15:20:46.669624Z"
+  },
+  {
+    "id": "user-akashavyom-dev-01",
+    "email": "developer@akashavyom.com",
+    "full_name": "AkashaVyom Scholar",
+    "password_hash": "$2b$12$L.ObBBplT7zSusxTMzzr6eNNR2kHJpWIcuLoMjnFm5lAjKxye74zm",
+    "avatar_url": "",
+    "created_at": "2026-11-24T15:27:54.464866Z"
+  }
+]
