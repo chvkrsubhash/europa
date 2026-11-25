@@ -3,29 +3,13 @@ import { useNotebook } from '../../context/NotebookContext';
 import { api } from '../../services/api';
 import {
   ArrowLeft, Home, PlusCircle, Folder, Share2, Info, Save,
-  FileEdit, Printer, Download, X, Check, HardDrive, ShieldCheck,
-  Calendar, Clock, FileText, ChevronRight, BookOpen, Layers,
-  Copy, Database, RefreshCw, AlertCircle
+  FileEdit, Printer, Download, Check, HardDrive, ShieldCheck,
+  ChevronRight, BookOpen, Layers, Copy, FileText
 } from 'lucide-react';
 
 interface BackstageViewProps {
   onOpenExport: (format: 'markdown' | 'html' | 'json' | 'titan') => void;
   onOpenTemplates: () => void;
-}
-
-interface StorageFileStat {
-  name: string;
-  size_bytes: number;
-  modified_at: string;
-}
-
-interface StorageStatusData {
-  storage_folder: string;
-  database_mode: string;
-  sync_status: string;
-  total_size_bytes?: number;
-  files: StorageFileStat[];
-  last_synced?: string;
 }
 
 export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOpenTemplates }) => {
@@ -37,8 +21,6 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
     notebooks,
     currentNotebook,
     setCurrentNotebook,
-    currentPage,
-    syncStatus,
     refreshNotebooks
   } = useNotebook();
 
@@ -46,30 +28,17 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
   const [newColor, setNewColor] = useState('#6941A5');
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
   const [pathCopied, setPathCopied] = useState(false);
-  const [homeSubTab, setHomeSubTab] = useState<'notebooks' | 'files' | 'unsaved'>('notebooks');
-  const [storageData, setStorageData] = useState<StorageStatusData | null>(null);
+  const [storagePath, setStoragePath] = useState('backend/data_store');
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // Fetch storage stats when backstage opens
   useEffect(() => {
     if (isBackstageOpen) {
       api.getStorageStatus()
-        .then((data) => setStorageData(data))
+        .then((data) => {
+          if (data?.storage_folder) setStoragePath(data.storage_folder);
+        })
         .catch(() => {
-          // Fallback default info if offline
-          setStorageData({
-            storage_folder: 'backend/data_store',
-            database_mode: 'local_store',
-            sync_status: 'saved',
-            files: [
-              { name: 'notebooks.json', size_bytes: 2142, modified_at: new Date().toISOString() },
-              { name: 'sections.json', size_bytes: 1905, modified_at: new Date().toISOString() },
-              { name: 'pages.json', size_bytes: 5267, modified_at: new Date().toISOString() },
-              { name: 'canvas_blocks.json', size_bytes: 9784, modified_at: new Date().toISOString() },
-              { name: 'ink_strokes.json', size_bytes: 1113, modified_at: new Date().toISOString() },
-              { name: 'ai_messages.json', size_bytes: 2427, modified_at: new Date().toISOString() },
-            ]
-          });
+          setStoragePath('backend/data_store');
         });
     }
   }, [isBackstageOpen]);
@@ -80,8 +49,6 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
     setIsSyncing(true);
     try {
       await api.syncStorage();
-      const updated = await api.getStorageStatus();
-      setStorageData(updated);
     } catch {
       // ignore
     } finally {
@@ -92,8 +59,7 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
   };
 
   const handleCopyPath = () => {
-    const path = storageData?.storage_folder || 'backend/data_store';
-    navigator.clipboard.writeText(path);
+    navigator.clipboard.writeText(storagePath);
     setPathCopied(true);
     setTimeout(() => setPathCopied(false), 2000);
   };
@@ -112,35 +78,39 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
     window.print();
   };
 
+  // Time-appropriate greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+
   return (
-    <div className="fixed inset-0 bg-[#0E1525] z-50 flex overflow-hidden text-white font-sans antialiased">
-      {/* 1. Left Dark Sidebar — Authentic OneNote/Office Backstage Navigation */}
-      <aside className="w-56 bg-[#0B111E] border-r border-[#1E293B] flex flex-col justify-between select-none py-3">
-        <div className="space-y-1">
+    <div className="fixed inset-0 bg-white z-50 flex overflow-hidden text-[#242424] font-sans antialiased">
+      {/* 1. Left Sidebar — Microsoft Office / OneNote Light Styling */}
+      <aside className="w-56 bg-[#F3F2F1] border-r border-[#E0E0E0] flex flex-col justify-between select-none py-3">
+        <div className="space-y-0.5">
           {/* Back Arrow Button */}
-          <div className="px-4 pb-4 pt-1">
+          <div className="px-4 pb-3 pt-1">
             <button
               onClick={() => setIsBackstageOpen(false)}
               title="Return to Notebook Canvas"
-              className="w-9 h-9 rounded-full border border-slate-600 hover:border-white hover:bg-white/10 flex items-center justify-center transition-colors text-white"
+              className="w-9 h-9 rounded-full border border-[#D1D5DB] hover:border-[#6941A5] hover:bg-white flex items-center justify-center transition-colors text-[#323130] hover:text-[#6941A5] shadow-xs"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Navigation Items (Matches User's Reference Screenshot) */}
+          {/* Navigation Items (Matches Authentic OneNote Backstage) */}
           <button
             onClick={() => setBackstageActiveTab('home')}
             className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
               backstageActiveTab === 'home'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-[#6941A5] font-semibold shadow-xs'
+                : 'text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424]'
             }`}
           >
             {backstageActiveTab === 'home' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#4A90E2]" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6941A5]" />
             )}
-            <Home className="w-4 h-4 text-[#4A90E2]" />
+            <Home className="w-4 h-4 text-[#6941A5]" />
             <span>Home</span>
           </button>
 
@@ -148,12 +118,12 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
             onClick={() => setBackstageActiveTab('new')}
             className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
               backstageActiveTab === 'new'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-[#6941A5] font-semibold shadow-xs'
+                : 'text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424]'
             }`}
           >
             {backstageActiveTab === 'new' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#4A90E2]" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6941A5]" />
             )}
             <PlusCircle className="w-4 h-4" />
             <span>New</span>
@@ -163,12 +133,12 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
             onClick={() => setBackstageActiveTab('open')}
             className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
               backstageActiveTab === 'open'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-[#6941A5] font-semibold shadow-xs'
+                : 'text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424]'
             }`}
           >
             {backstageActiveTab === 'open' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#4A90E2]" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6941A5]" />
             )}
             <Folder className="w-4 h-4" />
             <span>Open</span>
@@ -178,31 +148,31 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
             onClick={() => setBackstageActiveTab('share')}
             className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
               backstageActiveTab === 'share'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-[#6941A5] font-semibold shadow-xs'
+                : 'text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424]'
             }`}
           >
             {backstageActiveTab === 'share' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#4A90E2]" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6941A5]" />
             )}
             <Share2 className="w-4 h-4" />
             <span>Share</span>
           </button>
 
           <div className="py-2 px-5">
-            <div className="h-[1px] bg-slate-800" />
+            <div className="h-[1px] bg-[#E0E0E0]" />
           </div>
 
           <button
             onClick={() => setBackstageActiveTab('info')}
             className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
               backstageActiveTab === 'info'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-[#6941A5] font-semibold shadow-xs'
+                : 'text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424]'
             }`}
           >
             {backstageActiveTab === 'info' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#4A90E2]" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6941A5]" />
             )}
             <Info className="w-4 h-4" />
             <span>Info</span>
@@ -210,26 +180,23 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
 
           <button
             onClick={handleManualSave}
-            className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
-              backstageActiveTab === 'save'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
-            }`}
+            disabled={isSyncing}
+            className="w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424] transition-colors"
           >
-            <Save className="w-4 h-4" />
-            <span>Save</span>
+            <Save className="w-4 h-4 text-[#6941A5]" />
+            <span>{isSyncing ? 'Saving...' : 'Save'}</span>
           </button>
 
           <button
             onClick={() => setBackstageActiveTab('save_as')}
             className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
               backstageActiveTab === 'save_as'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-[#6941A5] font-semibold shadow-xs'
+                : 'text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424]'
             }`}
           >
             {backstageActiveTab === 'save_as' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#4A90E2]" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6941A5]" />
             )}
             <FileEdit className="w-4 h-4" />
             <span>Save As</span>
@@ -237,7 +204,7 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
 
           <button
             onClick={handlePrint}
-            className="w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+            className="w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424] transition-colors"
           >
             <Printer className="w-4 h-4" />
             <span>Print</span>
@@ -247,12 +214,12 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
             onClick={() => setBackstageActiveTab('export')}
             className={`w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium transition-colors relative ${
               backstageActiveTab === 'export'
-                ? 'bg-[#1E293B] text-white font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-[#6941A5] font-semibold shadow-xs'
+                : 'text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424]'
             }`}
           >
             {backstageActiveTab === 'export' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#4A90E2]" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6941A5]" />
             )}
             <Download className="w-4 h-4" />
             <span>Export</span>
@@ -260,7 +227,7 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
 
           <button
             onClick={() => setIsBackstageOpen(false)}
-            className="w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+            className="w-full flex items-center space-x-3.5 px-5 py-2.5 text-xs font-medium text-[#323130] hover:bg-[#EBEBEB] hover:text-[#242424] transition-colors"
           >
             <Folder className="w-4 h-4" />
             <span>Close</span>
@@ -268,237 +235,113 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
         </div>
 
         {/* Brand footer */}
-        <div className="px-5 text-[11px] text-slate-500">
+        <div className="px-5 text-[11px] text-[#8A8886]">
           Europa v1.0 &bull; AkashaVyom Labs
         </div>
       </aside>
 
-      {/* 2. Main Right Content Area */}
-      <main className="flex-1 overflow-y-auto p-10 bg-[#0F172A] text-slate-200">
+      {/* 2. Main Right Content Area — Clean Light Theme */}
+      <main className="flex-1 overflow-y-auto p-10 bg-[#FAFAFA] text-[#242424]">
         {/* ================= TAB: HOME ================= */}
         {backstageActiveTab === 'home' && (
           <div className="max-w-4xl space-y-7">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">Good evening</h2>
-              <p className="text-xs text-slate-400 mt-1">
-                AkashaVyom Labs Workspace &bull; Notebook storage location, saved files, and cache manager.
+              <h2 className="text-2xl font-bold text-[#242424] tracking-tight">{greeting}</h2>
+              <p className="text-xs text-[#616161] mt-1">
+                AkashaVyom Labs Workspace &bull; All your notebooks and files are automatically saved and organized.
               </p>
             </div>
 
-            {/* Storage Location & Folder Status Card */}
-            <div className="p-5 rounded-xl bg-slate-800/60 border border-slate-700/80 shadow-lg space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center space-x-3.5">
-                  <div className="w-11 h-11 rounded-lg bg-[#6941A5]/25 text-[#A47DD2] flex items-center justify-center border border-[#6941A5]/30">
-                    <HardDrive className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-white flex items-center space-x-2">
-                      <span>Notebook Storage Folder & Local Vault</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-purple-900/50 text-purple-300 border border-purple-700/50">
-                        {storageData?.database_mode === 'mongodb' ? 'MongoDB Atlas' : 'Embedded JSON Store'}
-                      </span>
-                    </h4>
-                    <p className="text-xs text-slate-400 font-mono mt-1 flex items-center space-x-2">
-                      <Folder className="w-3.5 h-3.5 text-[#A47DD2]" />
-                      <span className="text-[#C7B1E4] select-all">
-                        {storageData?.storage_folder || 'backend/data_store'}
-                      </span>
-                    </p>
-                  </div>
+            {/* Clean Storage Location Banner */}
+            <div className="p-5 rounded-xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center space-x-3.5">
+                <div className="w-10 h-10 rounded-lg bg-[#F0EAF8] text-[#6941A5] flex items-center justify-center">
+                  <HardDrive className="w-5 h-5" />
                 </div>
-
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={handleCopyPath}
-                    className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs font-medium text-white flex items-center space-x-1.5 transition-colors border border-slate-600"
-                    title="Copy local folder path to clipboard"
-                  >
-                    <Copy className="w-3.5 h-3.5 text-slate-300" />
-                    <span>{pathCopied ? 'Path Copied!' : 'Copy Path'}</span>
-                  </button>
-
-                  <button
-                    onClick={handleManualSave}
-                    disabled={isSyncing}
-                    className="px-3.5 py-1.5 rounded-lg bg-[#6941A5] hover:bg-[#58338C] text-xs font-semibold text-white flex items-center space-x-1.5 transition-all shadow-md active:scale-95"
-                    title="Commit all notebooks and blocks to disk"
-                  >
-                    <Save className="w-3.5 h-3.5" />
-                    <span>{isSyncing ? 'Saving to Disk...' : 'Save All Changes'}</span>
-                  </button>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h4 className="text-sm font-semibold text-[#242424]">Notebook Storage Folder</h4>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+                      All Changes Saved
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#616161] font-mono mt-0.5 flex items-center space-x-1.5">
+                    <Folder className="w-3.5 h-3.5 text-[#6941A5]" />
+                    <span className="select-all text-[#4B5563]">{storagePath}</span>
+                  </p>
                 </div>
               </div>
 
-              {/* Status Banner */}
-              <div className="pt-2 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-400">
-                <div className="flex items-center space-x-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-400 font-medium">All notebooks and canvas blocks saved to disk.</span>
-                </div>
-                <div>
-                  Last sync: <span className="font-mono text-slate-300">{storageData?.last_synced || 'Just now'}</span>
-                </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleCopyPath}
+                  className="px-3 py-1.5 rounded-lg bg-white border border-[#D1D5DB] hover:bg-[#F3F2F1] text-xs font-medium text-[#242424] flex items-center space-x-1.5 transition-colors shadow-xs"
+                  title="Copy storage folder path"
+                >
+                  <Copy className="w-3.5 h-3.5 text-[#616161]" />
+                  <span>{pathCopied ? 'Path Copied!' : 'Copy Path'}</span>
+                </button>
+
+                <button
+                  onClick={handleManualSave}
+                  disabled={isSyncing}
+                  className="px-3.5 py-1.5 rounded-lg bg-[#6941A5] hover:bg-[#58338C] text-xs font-semibold text-white flex items-center space-x-1.5 transition-all shadow-xs active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>{isSyncing ? 'Saving...' : 'Save Changes'}</span>
+                </button>
               </div>
             </div>
 
-            {/* Stored Files Manager (Saved vs Unsaved Tabs) */}
+            {/* Recent Stored Notebooks */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-700/60 pb-2">
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => setHomeSubTab('notebooks')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center space-x-1.5 ${
-                      homeSubTab === 'notebooks'
-                        ? 'bg-[#6941A5] text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`}
-                  >
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>Saved Notebooks ({notebooks.length})</span>
-                  </button>
-
-                  <button
-                    onClick={() => setHomeSubTab('files')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center space-x-1.5 ${
-                      homeSubTab === 'files'
-                        ? 'bg-[#6941A5] text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`}
-                  >
-                    <Database className="w-3.5 h-3.5" />
-                    <span>Data Store Files ({storageData?.files?.length || 0})</span>
-                  </button>
-
-                  <button
-                    onClick={() => setHomeSubTab('unsaved')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center space-x-1.5 ${
-                      homeSubTab === 'unsaved'
-                        ? 'bg-[#6941A5] text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`}
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Unsaved / Cache Status</span>
-                  </button>
-                </div>
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-[#616161]">
+                  Recent Notebooks ({notebooks.length})
+                </h3>
               </div>
 
-              {/* Sub-view 1: Saved Notebooks */}
-              {homeSubTab === 'notebooks' && (
-                <div className="divide-y divide-slate-800/80 rounded-xl bg-slate-800/40 border border-slate-700/60 overflow-hidden shadow-sm">
-                  {notebooks.map((nb) => (
-                    <div
-                      key={nb.id}
-                      onClick={() => {
-                        setCurrentNotebook(nb);
-                        setIsBackstageOpen(false);
-                      }}
-                      className="p-4 flex items-center justify-between hover:bg-slate-800/80 cursor-pointer transition-colors group"
-                    >
-                      <div className="flex items-center space-x-3.5">
-                        <div
-                          className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-offset-2 ring-offset-slate-900"
-                          style={{ backgroundColor: nb.color }}
-                        />
-                        <div>
-                          <div className="text-sm font-semibold text-white group-hover:text-[#C7B1E4] transition-colors">
-                            {nb.title}
-                          </div>
-                          <div className="text-xs text-slate-400 flex items-center space-x-3 mt-0.5">
-                            <span className="font-mono text-[11px] text-[#A47DD2]">
-                              backend/data_store/notebooks.json
-                            </span>
-                            <span>&bull;</span>
-                            <span>Modified: {new Date(nb.updated_at).toLocaleDateString()}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-3">
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-medium">
-                          Saved to Disk
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Sub-view 2: Physical JSON Files in backend/data_store */}
-              {homeSubTab === 'files' && (
-                <div className="divide-y divide-slate-800/80 rounded-xl bg-slate-800/40 border border-slate-700/60 overflow-hidden shadow-sm">
-                  {storageData?.files && storageData.files.length > 0 ? (
-                    storageData.files.map((file) => (
+              <div className="divide-y divide-[#E5E7EB] rounded-xl bg-white border border-[#E5E7EB] shadow-xs overflow-hidden">
+                {notebooks.map((nb) => (
+                  <div
+                    key={nb.id}
+                    onClick={() => {
+                      setCurrentNotebook(nb);
+                      setIsBackstageOpen(false);
+                    }}
+                    className="p-4 flex items-center justify-between hover:bg-[#F9FAFB] cursor-pointer transition-colors group"
+                  >
+                    <div className="flex items-center space-x-3.5">
                       <div
-                        key={file.name}
-                        className="p-3.5 flex items-center justify-between hover:bg-slate-800/60 transition-colors"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <FileText className="w-4 h-4 text-[#A47DD2]" />
-                          <div>
-                            <div className="text-xs font-mono font-semibold text-white">
-                              {file.name}
-                            </div>
-                            <div className="text-[11px] text-slate-400">
-                              Last modified: {file.modified_at}
-                            </div>
-                          </div>
+                        className="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-xs"
+                        style={{ backgroundColor: nb.color }}
+                      />
+                      <div>
+                        <div className="text-sm font-semibold text-[#242424] group-hover:text-[#6941A5] transition-colors">
+                          {nb.title}
                         </div>
-
-                        <div className="flex items-center space-x-4">
-                          <span className="text-xs font-mono text-slate-300">
-                            {(file.size_bytes / 1024).toFixed(1)} KB
-                          </span>
-                          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 font-medium">
-                            Persistent Disk File
-                          </span>
+                        <div className="text-xs text-[#616161] flex items-center space-x-2 mt-0.5">
+                          <span>Modified: {new Date(nb.updated_at).toLocaleDateString()}</span>
+                          <span>&bull;</span>
+                          <span className="text-[#6941A5]">Stored locally on disk</span>
                         </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="p-6 text-center text-xs text-slate-400">
-                      Loading data store files...
                     </div>
-                  )}
-                </div>
-              )}
 
-              {/* Sub-view 3: Unsaved / Cache Status */}
-              {homeSubTab === 'unsaved' && (
-                <div className="p-6 rounded-xl bg-slate-800/40 border border-slate-700/60 space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
-                      <ShieldCheck className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-white">Zero Unsaved Changes Pending</h4>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                        Europa utilizes an active write-through cache: all edits to pages, text containers, checklists, and digital ink strokes are automatically committed to the local backend JSON store and mirrored in browser IndexedDB.
-                      </p>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+                        Saved
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#6941A5] transition-colors" />
                     </div>
                   </div>
-
-                  <div className="flex items-center space-x-3 pt-2">
-                    <button
-                      onClick={handleManualSave}
-                      className="px-4 py-2 bg-[#6941A5] hover:bg-[#58338C] text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center space-x-2"
-                    >
-                      <Save className="w-3.5 h-3.5" />
-                      <span>Force Immediate Disk Flush</span>
-                    </button>
-                    <span className="text-xs text-slate-400">
-                      Sync state: <strong className="text-emerald-400 font-mono">100% In-Sync</strong>
-                    </span>
-                  </div>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
 
             {/* Quick Starters */}
             <div className="space-y-3 pt-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#616161]">
                 New From Template
               </h3>
               <div className="grid grid-cols-4 gap-3">
@@ -507,11 +350,11 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                     onOpenTemplates();
                     setIsBackstageOpen(false);
                   }}
-                  className="p-4 rounded-lg bg-slate-800/40 hover:bg-slate-800 border border-slate-700/60 hover:border-[#6941A5] text-left transition-all group"
+                  className="p-4 rounded-xl bg-white hover:bg-[#FAF8FD] border border-[#E5E7EB] hover:border-[#6941A5] text-left transition-all group shadow-xs"
                 >
-                  <PlusCircle className="w-6 h-6 text-[#A47DD2] mb-2 group-hover:scale-105 transition-transform" />
-                  <div className="text-xs font-semibold text-white">Blank Notebook</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Free-form white canvas</div>
+                  <PlusCircle className="w-6 h-6 text-[#6941A5] mb-2 group-hover:scale-105 transition-transform" />
+                  <div className="text-xs font-semibold text-[#242424]">Blank Notebook</div>
+                  <div className="text-[11px] text-[#616161] mt-0.5">Free-form canvas</div>
                 </button>
 
                 <button
@@ -519,11 +362,11 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                     onOpenTemplates();
                     setIsBackstageOpen(false);
                   }}
-                  className="p-4 rounded-lg bg-slate-800/40 hover:bg-slate-800 border border-slate-700/60 hover:border-[#6941A5] text-left transition-all group"
+                  className="p-4 rounded-xl bg-white hover:bg-[#FAF8FD] border border-[#E5E7EB] hover:border-[#6941A5] text-left transition-all group shadow-xs"
                 >
-                  <BookOpen className="w-6 h-6 text-[#4A90E2] mb-2 group-hover:scale-105 transition-transform" />
-                  <div className="text-xs font-semibold text-white">Cornell Notes</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Cues, notes & summary</div>
+                  <BookOpen className="w-6 h-6 text-[#0078D4] mb-2 group-hover:scale-105 transition-transform" />
+                  <div className="text-xs font-semibold text-[#242424]">Cornell Notes</div>
+                  <div className="text-[11px] text-[#616161] mt-0.5">Cues & summary</div>
                 </button>
 
                 <button
@@ -531,11 +374,11 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                     onOpenTemplates();
                     setIsBackstageOpen(false);
                   }}
-                  className="p-4 rounded-lg bg-slate-800/40 hover:bg-slate-800 border border-slate-700/60 hover:border-[#6941A5] text-left transition-all group"
+                  className="p-4 rounded-xl bg-white hover:bg-[#FAF8FD] border border-[#E5E7EB] hover:border-[#6941A5] text-left transition-all group shadow-xs"
                 >
-                  <FileText className="w-6 h-6 text-emerald-400 mb-2 group-hover:scale-105 transition-transform" />
-                  <div className="text-xs font-semibold text-white">Meeting Minutes</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Agendas & action items</div>
+                  <FileText className="w-6 h-6 text-[#107C41] mb-2 group-hover:scale-105 transition-transform" />
+                  <div className="text-xs font-semibold text-[#242424]">Meeting Minutes</div>
+                  <div className="text-[11px] text-[#616161] mt-0.5">Agendas & actions</div>
                 </button>
 
                 <button
@@ -543,11 +386,11 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                     onOpenTemplates();
                     setIsBackstageOpen(false);
                   }}
-                  className="p-4 rounded-lg bg-slate-800/40 hover:bg-slate-800 border border-slate-700/60 hover:border-[#6941A5] text-left transition-all group"
+                  className="p-4 rounded-xl bg-white hover:bg-[#FAF8FD] border border-[#E5E7EB] hover:border-[#6941A5] text-left transition-all group shadow-xs"
                 >
-                  <Layers className="w-6 h-6 text-amber-400 mb-2 group-hover:scale-105 transition-transform" />
-                  <div className="text-xs font-semibold text-white">Titan Document</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">AkashaVyom export ready</div>
+                  <Layers className="w-6 h-6 text-[#D97706] mb-2 group-hover:scale-105 transition-transform" />
+                  <div className="text-xs font-semibold text-[#242424]">Titan Document</div>
+                  <div className="text-[11px] text-[#616161] mt-0.5">AkashaVyom ready</div>
                 </button>
               </div>
             </div>
@@ -558,25 +401,25 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
         {backstageActiveTab === 'new' && (
           <div className="max-w-xl space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">Create New Notebook</h2>
-              <p className="text-xs text-slate-400 mt-1">Specify notebook name and accent color.</p>
+              <h2 className="text-2xl font-bold text-[#242424] tracking-tight">Create New Notebook</h2>
+              <p className="text-xs text-[#616161] mt-1">Specify notebook name and choose an accent color.</p>
             </div>
 
-            <form onSubmit={handleCreateNotebook} className="space-y-4">
+            <form onSubmit={handleCreateNotebook} className="space-y-4 bg-white p-6 rounded-xl border border-[#E5E7EB] shadow-xs">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1">Notebook Name</label>
+                <label className="text-xs font-medium text-[#242424] block mb-1.5">Notebook Name</label>
                 <input
                   type="text"
                   autoFocus
-                  placeholder="e.g. Distributed Systems & AI Research"
+                  placeholder="e.g. Research & Knowledge Base"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-[#4A90E2]"
+                  className="w-full px-3.5 py-2 bg-white border border-[#D1D5DB] rounded-lg text-sm text-[#242424] focus:outline-none focus:border-[#6941A5] focus:ring-1 focus:ring-[#6941A5]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-2">Accent Color</label>
+                <label className="text-xs font-medium text-[#242424] block mb-2">Accent Color</label>
                 <div className="flex items-center space-x-3">
                   {['#6941A5', '#0078D4', '#107C41', '#D13438', '#FFB900', '#B4009E', '#008272'].map((c) => (
                     <button
@@ -584,7 +427,7 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                       key={c}
                       onClick={() => setNewColor(c)}
                       className={`w-7 h-7 rounded-full transition-transform ${
-                        newColor === c ? 'ring-2 ring-offset-2 ring-offset-slate-900 ring-white scale-110' : ''
+                        newColor === c ? 'ring-2 ring-offset-2 ring-[#6941A5] scale-110 shadow-xs' : ''
                       }`}
                       style={{ backgroundColor: c }}
                     />
@@ -592,12 +435,14 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="px-5 py-2 bg-[#6941A5] hover:bg-[#563588] text-white rounded-lg text-xs font-semibold shadow-md transition-colors"
-              >
-                Create Notebook
-              </button>
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-[#6941A5] hover:bg-[#563588] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                >
+                  Create Notebook
+                </button>
+              </div>
             </form>
           </div>
         )}
@@ -606,11 +451,11 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
         {backstageActiveTab === 'open' && (
           <div className="max-w-2xl space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">Open Notebook</h2>
-              <p className="text-xs text-slate-400 mt-1">Select an existing notebook from your local storage vault.</p>
+              <h2 className="text-2xl font-bold text-[#242424] tracking-tight">Open Notebook</h2>
+              <p className="text-xs text-[#616161] mt-1">Select an existing notebook from your storage vault.</p>
             </div>
 
-            <div className="divide-y divide-slate-800 rounded-xl bg-slate-800/40 border border-slate-700/60 overflow-hidden">
+            <div className="divide-y divide-[#E5E7EB] rounded-xl bg-white border border-[#E5E7EB] shadow-xs overflow-hidden">
               {notebooks.map((nb) => (
                 <div
                   key={nb.id}
@@ -618,21 +463,23 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                     setCurrentNotebook(nb);
                     setIsBackstageOpen(false);
                   }}
-                  className="p-4 flex items-center justify-between hover:bg-slate-800/80 cursor-pointer transition-colors"
+                  className="p-4 flex items-center justify-between hover:bg-[#F9FAFB] cursor-pointer transition-colors group"
                 >
                   <div className="flex items-center space-x-3.5">
                     <div
-                      className="w-4 h-4 rounded-full flex-shrink-0"
+                      className="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-xs"
                       style={{ backgroundColor: nb.color }}
                     />
                     <div>
-                      <div className="text-sm font-semibold text-white">{nb.title}</div>
-                      <div className="text-xs text-slate-400 mt-0.5">
+                      <div className="text-sm font-semibold text-[#242424] group-hover:text-[#6941A5] transition-colors">
+                        {nb.title}
+                      </div>
+                      <div className="text-xs text-[#616161] mt-0.5">
                         Storage: backend/data_store &bull; ID: {nb.id.slice(0, 8)}...
                       </div>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#6941A5] transition-colors" />
                 </div>
               ))}
             </div>
@@ -643,26 +490,26 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
         {backstageActiveTab === 'share' && (
           <div className="max-w-xl space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">Share Notebook</h2>
-              <p className="text-xs text-slate-400 mt-1">Generate collaborative links or invite workspace teammates.</p>
+              <h2 className="text-2xl font-bold text-[#242424] tracking-tight">Share Notebook</h2>
+              <p className="text-xs text-[#616161] mt-1">Generate collaborative links for workspace teammates.</p>
             </div>
 
-            <div className="p-5 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-4">
-              <div className="text-xs text-slate-300">
-                Share this notebook for real-time collaboration with team members.
-              </div>
+            <div className="p-6 rounded-xl bg-white border border-[#E5E7EB] shadow-xs space-y-4">
+              <p className="text-xs text-[#616161] leading-relaxed">
+                Anyone with this link will be able to access this notebook in collaborative view.
+              </p>
               <div className="flex items-center space-x-2">
                 <input
                   readOnly
                   value={window.location.href}
-                  className="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs font-mono text-slate-300 select-all"
+                  className="flex-1 px-3 py-2 bg-[#F9FAFB] border border-[#D1D5DB] rounded-lg text-xs font-mono text-[#374151] select-all"
                 />
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
                     alert('Share link copied to clipboard!');
                   }}
-                  className="px-4 py-2 bg-[#6941A5] text-white text-xs font-semibold rounded-lg hover:bg-[#58338C]"
+                  className="px-4 py-2 bg-[#6941A5] text-white text-xs font-semibold rounded-lg hover:bg-[#58338C] transition-colors shadow-xs"
                 >
                   Copy Link
                 </button>
@@ -675,38 +522,30 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
         {backstageActiveTab === 'info' && currentNotebook && (
           <div className="max-w-xl space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">Notebook Information</h2>
-              <p className="text-xs text-slate-400 mt-1">Properties, permissions, and storage parameters.</p>
+              <h2 className="text-2xl font-bold text-[#242424] tracking-tight">Notebook Information</h2>
+              <p className="text-xs text-[#616161] mt-1">Properties, permissions, and storage parameters.</p>
             </div>
 
-            <div className="p-5 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-3 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-700/60">
-                <span className="text-slate-400">Notebook Title:</span>
-                <span className="font-semibold text-white">{currentNotebook.title}</span>
+            <div className="p-6 rounded-xl bg-white border border-[#E5E7EB] shadow-xs space-y-3 text-xs">
+              <div className="flex justify-between py-2 border-b border-[#F3F4F6]">
+                <span className="text-[#616161]">Notebook Title:</span>
+                <span className="font-semibold text-[#242424]">{currentNotebook.title}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-700/60">
-                <span className="text-slate-400">Identifier:</span>
-                <span className="font-mono text-slate-300">{currentNotebook.id}</span>
+              <div className="flex justify-between py-2 border-b border-[#F3F4F6]">
+                <span className="text-[#616161]">Identifier:</span>
+                <span className="font-mono text-[#4B5563]">{currentNotebook.id}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-700/60">
-                <span className="text-slate-400">Storage Backend:</span>
-                <span className="text-emerald-400">
-                  {storageData?.database_mode === 'mongodb' ? 'MongoDB Atlas' : 'Local JSON Multi-File Store'}
-                </span>
+              <div className="flex justify-between py-2 border-b border-[#F3F4F6]">
+                <span className="text-[#616161]">Storage Backend:</span>
+                <span className="text-emerald-700 font-medium">Local JSON Store &bull; MongoDB Ready</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-700/60">
-                <span className="text-slate-400">Local Folder:</span>
-                <span className="font-mono text-[#C7B1E4] select-all">
-                  {storageData?.storage_folder || 'backend/data_store'}
-                </span>
+              <div className="flex justify-between py-2 border-b border-[#F3F4F6]">
+                <span className="text-[#616161]">Storage Folder:</span>
+                <span className="font-mono text-[#6941A5] select-all">{storagePath}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-700/60">
-                <span className="text-slate-400">Encryption / Privacy:</span>
-                <span className="text-white">Strict Local Isolation (No unauthorized cloud sync)</span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span className="text-slate-400">Created:</span>
-                <span className="text-slate-300">{new Date(currentNotebook.created_at).toLocaleString()}</span>
+              <div className="flex justify-between py-2">
+                <span className="text-[#616161]">Created:</span>
+                <span className="text-[#242424]">{new Date(currentNotebook.created_at).toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -716,13 +555,13 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
         {backstageActiveTab === 'save_as' && (
           <div className="max-w-xl space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">Save As / Duplicate</h2>
-              <p className="text-xs text-slate-400 mt-1">Clone notebook or export snapshot into local storage.</p>
+              <h2 className="text-2xl font-bold text-[#242424] tracking-tight">Save As / Duplicate</h2>
+              <p className="text-xs text-[#616161] mt-1">Create an exact duplicate copy of this notebook.</p>
             </div>
 
-            <div className="p-5 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-4">
-              <p className="text-xs text-slate-300">
-                Create a duplicate copy of <strong className="text-white">{currentNotebook?.title}</strong> in the storage vault:
+            <div className="p-6 rounded-xl bg-white border border-[#E5E7EB] shadow-xs space-y-4">
+              <p className="text-xs text-[#616161] leading-relaxed">
+                Duplicate <strong className="text-[#242424]">{currentNotebook?.title}</strong> as a new independent notebook in your storage folder:
               </p>
               <button
                 onClick={async () => {
@@ -735,7 +574,7 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                   setCurrentNotebook(cloned);
                   setIsBackstageOpen(false);
                 }}
-                className="px-4 py-2 bg-[#6941A5] text-white text-xs font-semibold rounded-lg hover:bg-[#58338C]"
+                className="px-4 py-2 bg-[#6941A5] text-white text-xs font-semibold rounded-lg hover:bg-[#58338C] transition-colors shadow-xs"
               >
                 Duplicate to Storage Folder
               </button>
@@ -747,8 +586,8 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
         {backstageActiveTab === 'export' && (
           <div className="max-w-xl space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">Export Notebook Content</h2>
-              <p className="text-xs text-slate-400 mt-1">Export in industry standard or Titan document formats.</p>
+              <h2 className="text-2xl font-bold text-[#242424] tracking-tight">Export Notebook Content</h2>
+              <p className="text-xs text-[#616161] mt-1">Export in standard document formats or AkashaVyom Titan Document format.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -757,10 +596,10 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                   onOpenExport('markdown');
                   setIsBackstageOpen(false);
                 }}
-                className="p-4 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 text-left transition-colors"
+                className="p-4 rounded-xl bg-white hover:bg-[#FAF8FD] border border-[#E5E7EB] hover:border-[#6941A5] text-left transition-colors shadow-xs"
               >
-                <div className="font-semibold text-white text-sm">Markdown (.md)</div>
-                <div className="text-xs text-slate-400 mt-1">Standard Markdown format</div>
+                <div className="font-semibold text-[#242424] text-sm">Markdown (.md)</div>
+                <div className="text-xs text-[#616161] mt-1">Standard Markdown note</div>
               </button>
 
               <button
@@ -768,10 +607,10 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                   onOpenExport('html');
                   setIsBackstageOpen(false);
                 }}
-                className="p-4 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 text-left transition-colors"
+                className="p-4 rounded-xl bg-white hover:bg-[#FAF8FD] border border-[#E5E7EB] hover:border-[#6941A5] text-left transition-colors shadow-xs"
               >
-                <div className="font-semibold text-white text-sm">HTML (.html)</div>
-                <div className="text-xs text-slate-400 mt-1">Stand-alone web presentation</div>
+                <div className="font-semibold text-[#242424] text-sm">HTML (.html)</div>
+                <div className="text-xs text-[#616161] mt-1">Web presentation</div>
               </button>
 
               <button
@@ -779,10 +618,10 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                   onOpenExport('titan');
                   setIsBackstageOpen(false);
                 }}
-                className="p-4 rounded-xl bg-[#6941A5]/20 hover:bg-[#6941A5]/30 border border-[#6941A5]/60 text-left transition-colors"
+                className="p-4 rounded-xl bg-[#FAF8FD] hover:bg-[#F0EAF8] border border-[#DFD1F0] text-left transition-colors shadow-xs"
               >
-                <div className="font-semibold text-white text-sm">Titan Document (.json)</div>
-                <div className="text-xs text-[#C7B1E4] mt-1">AkashaVyom Titan Document format</div>
+                <div className="font-semibold text-[#6941A5] text-sm">Titan Document (.json)</div>
+                <div className="text-xs text-[#6941A5]/80 mt-1">AkashaVyom Titan Document format</div>
               </button>
 
               <button
@@ -790,10 +629,10 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
                   onOpenExport('json');
                   setIsBackstageOpen(false);
                 }}
-                className="p-4 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 text-left transition-colors"
+                className="p-4 rounded-xl bg-white hover:bg-[#FAF8FD] border border-[#E5E7EB] hover:border-[#6941A5] text-left transition-colors shadow-xs"
               >
-                <div className="font-semibold text-white text-sm">Structured JSON</div>
-                <div className="text-xs text-slate-400 mt-1">Complete raw canvas data backup</div>
+                <div className="font-semibold text-[#242424] text-sm">Structured JSON</div>
+                <div className="text-xs text-[#616161] mt-1">Complete raw canvas data backup</div>
               </button>
             </div>
           </div>
@@ -801,7 +640,7 @@ export const BackstageView: React.FC<BackstageViewProps> = ({ onOpenExport, onOp
 
         {/* Save confirmation toast */}
         {saveSuccessMsg && (
-          <div className="fixed bottom-8 right-8 bg-emerald-600 text-white px-5 py-3 rounded-lg shadow-xl text-xs font-semibold flex items-center space-x-2 animate-bounce">
+          <div className="fixed bottom-8 right-8 bg-[#107C41] text-white px-5 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center space-x-2 animate-bounce">
             <Check className="w-4 h-4" />
             <span>Notebook successfully saved to storage!</span>
           </div>
