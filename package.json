@@ -1,0 +1,11 @@
+{
+  "name": "europa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Europa — Digital Notebook & AI Knowledge Workspace by AkashaVyom Labs",
+  "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
+    "dev": "npm --prefix frontend run dev",
+    "preview": "npm --prefix frontend run preview"
+  }
+}

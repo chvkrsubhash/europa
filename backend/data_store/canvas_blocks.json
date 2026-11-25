@@ -395,5 +395,50 @@
     "is_locked": false,
     "created_at": "2026-11-24T16:20:21.526193Z",
     "updated_at": "2026-11-24T16:20:21.526193Z"
+  },
+  {
+    "id": "724c12ea-7cf4-405a-b2f9-edf2db14350b",
+    "page_id": "page-welcome-01",
+    "block_type": "text",
+    "x": 496.0,
+    "y": 75.0,
+    "width": 400.0,
+    "height": null,
+    "layer_order": 1,
+    "content": "<p></p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-25T03:29:58.012397Z",
+    "updated_at": "2026-11-25T03:29:58.012397Z"
+  },
+  {
+    "id": "8ac47de7-1e0e-4f97-9d39-dc7122dda1ef",
+    "page_id": "page-welcome-01",
+    "block_type": "text",
+    "x": 491.0,
+    "y": 193.0,
+    "width": 400.0,
+    "height": null,
+    "layer_order": 2,
+    "content": "<p></p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-25T03:29:59.942906Z",
+    "updated_at": "2026-11-25T03:29:59.942906Z"
+  },
+  {
+    "id": "f87f0bdf-6e90-459b-8763-06e2e7902ce1",
+    "page_id": "page-welcome-01",
+    "block_type": "text",
+    "x": 58.0,
+    "y": 102.0,
+    "width": 400.0,
+    "height": null,
+    "layer_order": 3,
+    "content": "<p>fdfdfd hidasdsa</p><p>afdjaf</p><p></p><p>saf</p><p>s</p><p>f</p><p>af</p><p>a</p><p>fa</p><p>fafasf</p>",
+    "formatting": {},
+    "is_locked": false,
+    "created_at": "2026-11-25T03:30:01.356859Z",
+    "updated_at": "2026-11-25T03:30:35.932809Z"
   }
 ]

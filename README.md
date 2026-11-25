@@ -146,6 +146,25 @@ npm run build
 
 ---
 
+## ⚡ Deploying to Vercel
+
+Europa is pre-configured for instant **Vercel** deployment with 0 manual configuration required.
+
+### One-Click / Dashboard Deployment
+1. Import the repository `https://github.com/chvkrsubhash/europa.git` in the **Vercel Dashboard**.
+2. Vercel automatically detects the root configuration:
+   - **Framework Preset**: `Vite`
+   - **Build Command**: `cd frontend && npm install && npm run build` (or `npm run build`)
+   - **Output Directory**: `frontend/dist`
+   - **Serverless API Routes**: Powered by `api/index.py` via Python Serverless Functions
+3. *(Optional)* Set Environment Variables in Vercel:
+   - `MONGODB_URI`: Your MongoDB Atlas connection string (for cloud-synced persistent database).
+   - `GEMINI_API_KEY` / `GROQ_API_KEY`: For live AI Workspace features.
+   - `VITE_API_URL`: If hosting the FastAPI backend on an external server (e.g. Render/Railway), set this to your backend domain.
+4. Click **Deploy**.
+
+---
+
 ## 🏢 Brand Attribution
 **Parent Company:** AkashaVyom Labs  
 **Product Name:** Europa  

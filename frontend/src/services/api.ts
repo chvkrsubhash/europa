@@ -1,7 +1,16 @@
 import { Notebook, Section, Page, CanvasBlock, InkStroke, TaskItem, TagItem, TemplateItem, User } from '../types';
 import { offlineStore } from './offlineStore';
 
-const API_BASE = '/api';
+const getApiBase = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    const trimmed = envUrl.trim().replace(/\/+$/, '');
+    return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+  }
+  return '/api';
+};
+
+const API_BASE = getApiBase();
 
 class ApiClient {
   private token: string | null = localStorage.getItem('europa_auth_token');

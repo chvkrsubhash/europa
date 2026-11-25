@@ -13,7 +13,7 @@
     "paper_style": "ruled",
     "rule_spacing": 32,
     "created_at": "2026-11-24T15:10:26.621078Z",
-    "updated_at": "2026-11-24T15:48:45.947612Z"
+    "updated_at": "2026-11-25T03:30:01.359009Z"
   },
   {
     "id": "page-welcome-01",
@@ -120,12 +120,12 @@
     "order": 3,
     "is_pinned": false,
     "is_favorite": false,
-    "is_deleted": false,
+    "is_deleted": true,
     "background_color": "#FFFFFF",
     "paper_style": "ruled",
     "rule_spacing": 32,
     "created_at": "2026-11-24T15:28:48.795264Z",
-    "updated_at": "2026-11-24T15:28:48.795264Z"
+    "updated_at": "2026-11-25T03:29:38.956504Z"
   },
   {
     "id": "page_1795515636354",
@@ -136,12 +136,12 @@
     "order": 4,
     "is_pinned": false,
     "is_favorite": false,
-    "is_deleted": false,
+    "is_deleted": true,
     "background_color": "#FFFFFF",
     "paper_style": "grid",
     "rule_spacing": 32,
     "created_at": "2026-11-24T15:50:36.357703Z",
-    "updated_at": "2026-11-24T15:50:56.688949Z"
+    "updated_at": "2026-11-25T03:29:30.637560Z"
   },
   {
     "id": "page_1795515741778",

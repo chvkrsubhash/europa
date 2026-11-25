@@ -161,6 +161,18 @@ class DatabaseManager:
                 print(f"[Europa DB] MongoDB connection warning: {e}. Falling back to high-performance local store.")
         
         self.is_mongo = False
+        # If storage dir is in a temp directory (e.g. serverless Vercel runtime), seed initial JSON documents
+        seed_dir = os.path.join(os.path.dirname(__file__), "data_store")
+        if os.path.abspath(self.store_dir) != os.path.abspath(seed_dir) and os.path.exists(seed_dir):
+            try:
+                import shutil
+                for fname in os.listdir(seed_dir):
+                    if fname.endswith(".json"):
+                        dest = os.path.join(self.store_dir, fname)
+                        if not os.path.exists(dest):
+                            shutil.copy2(os.path.join(seed_dir, fname), dest)
+            except Exception:
+                pass
         print(f"[Europa DB] Using local persistent JSON collection store at {self.store_dir}")
 
     def get_collection(self, name: str):

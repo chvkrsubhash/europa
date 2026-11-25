@@ -25,9 +25,19 @@ class Settings:
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     
     # Storage
-    UPLOAD_DIR: str = os.path.join(os.path.dirname(__file__), "uploads")
-    LOCAL_STORAGE_DIR: str = os.path.join(os.path.dirname(__file__), "data_store")
+    UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", os.path.join(os.path.dirname(__file__), "uploads"))
+    LOCAL_STORAGE_DIR: str = os.getenv("LOCAL_STORAGE_DIR", os.path.join(os.path.dirname(__file__), "data_store"))
 
 settings = Settings()
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-os.makedirs(settings.LOCAL_STORAGE_DIR, exist_ok=True)
+
+# Ensure directories exist; in serverless environments (e.g. Vercel) where root is read-only, fallback to /tmp
+try:
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    os.makedirs(settings.LOCAL_STORAGE_DIR, exist_ok=True)
+except Exception:
+    import tempfile
+    tmp_base = tempfile.gettempdir()
+    settings.UPLOAD_DIR = os.path.join(tmp_base, "europa_uploads")
+    settings.LOCAL_STORAGE_DIR = os.path.join(tmp_base, "europa_data_store")
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    os.makedirs(settings.LOCAL_STORAGE_DIR, exist_ok=True)
